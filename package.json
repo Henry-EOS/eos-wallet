@@ -1,24 +1,46 @@
 {
-  "name": "rollup-starter-lib",
-  "version": "1.0.0",
-  "main": "dist/how-long-till-lunch.cjs.js",
-  "module": "dist/how-long-till-lunch.esm.js",
-  "browser": "dist/how-long-till-lunch.umd.js",
+  "name": "eos-hdwallet",
+  "version": "0.1.0",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js",
   "dependencies": {
-    "ms": "^2.0.0"
+    "bip39": "^2.5.0",
+    "eosjs": "^8.0.1",
+    "eosjs-ecc": "^2.0.1",
+    "hdkey": "^0.8.0",
+    "safe-buffer": "^5.1.1",
+    "wif": "^2.0.6"
   },
   "devDependencies": {
+    "coveralls": "^3.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.1.1",
     "rollup": "^0.58.0",
     "rollup-plugin-commonjs": "^9.1.0",
-    "rollup-plugin-node-resolve": "^3.0.0"
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "standard": "^11.0.1"
   },
   "scripts": {
+    "coverage": "istanbul cover _mocha",
+    "coveralls": "npm run coverage && coveralls <coverage/lcov.info",
+    "lint": "standard",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "node test/test.js",
+    "test": "mocha",
     "pretest": "npm run build"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "standard": {
+    "globals": [
+      "describe",
+      "it"
+    ],
+    "ignore": [
+      "dist/**"
+    ]
+  }
 }
