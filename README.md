@@ -20,7 +20,7 @@ Instance Methods:
 * `getPublicExtendedKey` - Return the public extend key (base58)
 * `getAddress` - Return the EOS address (sometimes called pubkey in eosjs)
 * `getPrivateKey` - Return the private key of the current node / address (sometimes called wif in eosjs)
-* `generateTransaction` - Generate a EOS raw transaction, param example:
+* `generateTransaction` - `return Promise` - Generate a EOS raw transaction, param example:
 ```
 {
   from: 'eosio',
