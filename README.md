@@ -2,17 +2,20 @@
 
 ![travis](https://travis-ci.org/cobowallet/eoswallet.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/cobowallet/eoswallet/badge.svg?branch=master)](https://coveralls.io/github/cobowallet/eoswallet?branch=master)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-JavaScript HDWallet for EOS blockchain
+> JavaScript HDWallet for EOS blockchain, something like `ethereumjs-wallet`.
 
-### HDNode
+### EOS HDNode
 
-Constructors:
+You will create a EOS HDNode instance and use the methods of the instance:
+
+**Constructors:**
 
 * `fromMasterSeed` - Create HD instance from a master seed
 * `fromExtendedKey` - Create HD instance from a base58 string
 
-Instance Methods:
+**Instance Methods:**
 
 * `derivePath` - Return a derived HD node instance use a path (`"m/44'/196'/0'/0/0"`)
 * `deriveChild` - Return a derived HD node instance
