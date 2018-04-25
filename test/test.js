@@ -1,6 +1,6 @@
 const assert = require('assert')
 const bip39 = require('bip39')
-const HDNode = require('../')
+const HDNode = require('../dist/index.cjs.js')
 const mnemonic = 'cobo wallet is awesome'
 const seed = bip39.mnemonicToSeedHex(mnemonic)
 
