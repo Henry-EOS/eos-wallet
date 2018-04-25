@@ -16,6 +16,7 @@
     "coveralls": "^3.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.1.1",
+    "nyc": "^11.7.1",
     "rollup": "^0.58.0",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-json": "^2.3.0",
@@ -23,12 +24,12 @@
     "standard": "^11.0.1"
   },
   "scripts": {
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly",
     "lint": "standard",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "test": "mocha",
-    "pretest": "npm run build"
+    "coverage": "nyc --reporter=html --reporter=text mocha",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "files": [
     "dist"

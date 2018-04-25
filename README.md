@@ -1,6 +1,7 @@
 # EOS HDWallet
 
-![travis](https://travis-ci.org/cobowallet/eoswallet.svg?branch=master) ![codecov]
+![travis](https://travis-ci.org/cobowallet/eoswallet.svg?branch=master)
+![codecov](https://codecov.io/gh/cobowallet/eoswallet/branch/master/graph/badge.svg)
 
 JavaScript HDWallet for EOS blockchain
 
