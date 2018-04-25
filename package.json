@@ -23,8 +23,7 @@
     "standard": "^11.0.1"
   },
   "scripts": {
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha",
-    "coveralls": "npm run coverage && coveralls <coverage/lcov.info",
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly",
     "lint": "standard",
     "build": "rollup -c",
     "dev": "rollup -c -w",
