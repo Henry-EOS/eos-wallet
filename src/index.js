@@ -2,6 +2,8 @@ import hdkey from 'hdkey'
 import ecc from 'eosjs-ecc'
 import wif from 'wif'
 import { Buffer } from 'safe-buffer'
+import eos from 'eosjs'
+import { toEOSAmount, getExpiration } from './util'
 
 class HDNode {
   constructor ({seed, extendedKey}) {
@@ -46,6 +48,34 @@ class HDNode {
 
   getPrivateKey () {
     return wif.encode(128, this._node._privateKey, false)
+  }
+
+  getInstance (expiration, refBlockNum, refBlockPrefix) {
+    const headers = {
+      expiration: getExpiration(expiration),
+      region: 0,
+      ref_block_num: refBlockNum,
+      ref_block_prefix: refBlockPrefix,
+      max_net_usage_words: 0,
+      max_kcpu_usage: 0,
+      delay_sec: 0,
+      context_free_actions: []
+    }
+    const privateKey = this.getPrivateKey()
+    return eos.Localnet({
+      keyProvider: privateKey,
+      httpEndpoint: 'https://doesnotexist.example.org',
+      transactionHeaders: (expireInSeconds, callback) => callback(null, headers),
+      broadcast: false,
+      sign: true
+    })
+  }
+
+  async generateTransaction ({ from, to, amount, memo, refBlockNum, refBlockPrefix, expiration = 60 }) {
+    // offline mode eosjs
+    const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
+    const trx = await eosjsInstance.transfer(from, to, toEOSAmount(amount), memo)
+    return trx
   }
 }
 

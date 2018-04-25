@@ -34,4 +34,17 @@ describe('EOS HDNode', function () {
     assert.equal(node.getPrivateExtendedKey(), 'xprv9s21ZrQH143K27GwrJ5SPAZc9KPn8i8gkjeXcQe5vPtRPgUDyoq8qrh4qCRPwZAxzP8abdc9nZduW7UDYN1B5V6rjhc3YPMXzr9ArHaM4M6')
     assert.equal(node.getPublicExtendedKey(), 'xpub661MyMwAqRbcEbMQxKcSkJWLhMEGYArY7xa8Qo3hUjRQGUoNXM9PPf1YgT9CCwi8MNvRLW91thbtChgu6eP5qcUeg3x2QLQGfFfC5LqM5dt')
   })
+
+  it('Can generate and sign transaction', async () => {
+    const node = HDNode.fromMasterSeed(seed)
+    const trx = await node.generateTransaction({
+      from: 'eosio',
+      to: 'cobowallet',
+      amount: 100000,
+      memo: 'cobo wallet is awesome',
+      refBlockNum: 1,
+      refBlockPrefix: 452435776
+    })
+    assert.equal(trx.transaction.signatures.length, 1, 'expecting 1 signature')
+  })
 })

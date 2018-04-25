@@ -27,7 +27,7 @@
     "lint": "standard",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "mocha",
+    "test": "npm run build && mocha",
     "coverage": "nyc --reporter=html --reporter=text mocha",
     "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls"
   },
