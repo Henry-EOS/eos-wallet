@@ -5,6 +5,6 @@ install:
   - npm install
   - npm install -g codecov
 script:
-  - npm build
+  - npm run build
   - istanbul cover ./node_modules/mocha/bin/_mocha
   - codecov
