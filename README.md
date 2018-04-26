@@ -10,10 +10,13 @@
 
 You will create a EOS HDNode instance and use the methods of the instance:
 
-**Constructors:**
+**Static Methods:**
 
 * `fromMasterSeed` - Create HD instance from a master seed
 * `fromExtendedKey` - Create HD instance from a base58 string
+* `fromMnemonic` - Create HD instance from a mnemonic
+* `fromPrivateKey` - Create HD instance from a EOS private key, or WIF (Cannot derive or get xpriv, xpub in this way)
+* `generateMnemonic` - Generate new mnemonic, or you can use `bip39` directly
 
 **Instance Methods:**
 

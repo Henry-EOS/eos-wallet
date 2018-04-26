@@ -1,5 +1,5 @@
 {
-  "name": "eos-hdwallet",
+  "name": "eos-wallet",
   "version": "0.1.0",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -10,6 +10,7 @@
     "eosjs-ecc": "^2.0.1",
     "hdkey": "^0.8.0",
     "safe-buffer": "^5.1.1",
+    "secp256k1": "^3.5.0",
     "wif": "^2.0.6"
   },
   "devDependencies": {
@@ -27,7 +28,7 @@
     "lint": "standard",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "npm run build && mocha",
+    "test": "npm run lint && npm run build && mocha",
     "coverage": "nyc --reporter=html --reporter=text mocha",
     "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls"
   },
@@ -37,7 +38,8 @@
   "standard": {
     "globals": [
       "describe",
-      "it"
+      "it",
+      "expect"
     ],
     "ignore": [
       "dist/**"

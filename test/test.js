@@ -1,5 +1,6 @@
 const assert = require('assert')
 const bip39 = require('bip39')
+const EOS = require('eosjs')
 const HDNode = require('../dist/index.cjs.js')
 const mnemonic = 'cobo wallet is awesome'
 const seed = bip39.mnemonicToSeedHex(mnemonic)
@@ -10,9 +11,22 @@ describe('EOS HDNode', function () {
     assert.equal(node.getAddress(), 'EOS4w7FYzzeYJ7oz6XD5exo9ARpQdGoBZhPPjv5ywyrF5PioHtthX')
   })
 
+  it('Can generate new mnemonic and import', () => {
+    const myMnemonic = HDNode.generateMnemonic()
+    const node = HDNode.fromMnemonic(myMnemonic)
+    assert(node.getAddress())
+  })
+
   it('Can import from base58 string', () => {
     const node = HDNode.fromExtendedKey('xprv9s21ZrQH143K27GwrJ5SPAZc9KPn8i8gkjeXcQe5vPtRPgUDyoq8qrh4qCRPwZAxzP8abdc9nZduW7UDYN1B5V6rjhc3YPMXzr9ArHaM4M6')
     assert.equal(node.getAddress(), 'EOS4w7FYzzeYJ7oz6XD5exo9ARpQdGoBZhPPjv5ywyrF5PioHtthX')
+  })
+
+  it('Can import from private key', () => {
+    const node = HDNode.fromPrivateKey('5JEz3RE92t35seYNWzrBhXvE22LkFCSJPWqi1icoxoXH9ZPqMVj')
+    assert.equal(node.getAddress(), 'EOS8Q6s4WGcswUdot8UntNA2G4PVnUha5MyE1CDwZSX76FWc1xQEs')
+    assert.throws(() => node.derivePath('123'), Error)
+    assert.throws(() => node.getPublicExtendedKey(), Error)
   })
 
   it('Can derive to child nodes and get EOS address', () => {
@@ -46,5 +60,36 @@ describe('EOS HDNode', function () {
       refBlockPrefix: 452435776
     })
     assert.equal(trx.transaction.signatures.length, 1, 'expecting 1 signature')
+
+    const trx2 = await node.generateTransaction({
+      from: 'eosio',
+      to: 'cobowallet',
+      amount: 100000,
+      memo: 'cobo wallet is awesome',
+      refBlockNum: 1,
+      refBlockPrefix: 452435776,
+      symbol: 'CUR',
+      expiration: 120
+    })
+    assert.equal(trx2.transaction.signatures.length, 1, 'expecting 1 signature')
+  })
+
+  it('Can import from private key and transfer', async () => {
+    const node = HDNode.fromPrivateKey('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
+    const provider = EOS.Localnet({ httpEndpoint: 'http://114.112.100.193:8888' })
+    const latestBlock = await provider.getInfo({})
+    const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
+    const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
+    const { transaction } = await node.generateTransaction({
+      from: 'eosio',
+      to: 'inita',
+      amount: 0,
+      memo: 'cobo wallet is awesome',
+      refBlockNum,
+      refBlockPrefix: blockInfo.ref_block_prefix
+    })
+    return provider.pushTransaction(transaction, (err, res) => {
+      console.log(err, res)
+    })
   })
 })
