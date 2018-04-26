@@ -38,3 +38,7 @@ You will create a EOS HDNode instance and use the methods of the instance:
   expiration: 60 // default is 60s
 }
 ```
+
+### Examples
+
+See `test/test.js`
