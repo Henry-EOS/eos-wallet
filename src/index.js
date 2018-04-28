@@ -106,6 +106,18 @@ class HDNode {
     const trx = await eosjsInstance.transfer(from, to, toEOSAmount(amount, symbol), memo)
     return trx
   }
+
+  async registerAccount ({ accountName, refBlockNum, refBlockPrefix, expiration, creator = 'eosio' }) {
+    const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
+    const res = await eosjsInstance.newaccount({
+      creator,
+      name: accountName,
+      owner: this.getAddress(),
+      active: this.getAddress(),
+      recovery: creator
+    })
+    return res
+  }
 }
 
 export default HDNode
