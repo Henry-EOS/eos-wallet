@@ -1,7 +1,7 @@
 # EOS HDWallet
 
-![travis](https://travis-ci.org/cobowallet/eoswallet.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/cobowallet/eoswallet/badge.svg?branch=master)](https://coveralls.io/github/cobowallet/eoswallet?branch=master)
+![travis](https://travis-ci.org/cobowallet/eos-wallet.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/cobowallet/eos-wallet/badge.svg?branch=master)](https://coveralls.io/github/cobowallet/eos-wallet?branch=master)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 > JavaScript HDWallet for EOS blockchain, something like `ethereumjs-wallet`.

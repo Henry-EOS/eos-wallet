@@ -80,10 +80,13 @@ describe('EOS HDNode', function () {
     const latestBlock = await provider.getInfo({})
     const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
     const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
+
+    const randomName = () => 'a' +
+      String(Math.round(Math.random() * 1000000000)).replace(/[0,6-9]/g, '')
     const { transaction } = await node.registerAccount({
       refBlockNum,
       refBlockPrefix: blockInfo.ref_block_prefix,
-      accountName: 'cobowallet'
+      accountName: randomName()
     })
     const res = await provider.pushTransaction(transaction)
     console.log(res)
