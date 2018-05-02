@@ -1,13 +1,13 @@
 {
-  "name": "eos-wallet",
-  "version": "0.1.0",
+  "name": "@cobo/eos",
+  "version": "0.1.2",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
   "dependencies": {
     "bip39": "^2.5.0",
-    "eosjs": "^8.0.1",
-    "eosjs-ecc": "^2.0.1",
+    "eosjs": "^9.0.1",
+    "eosjs-ecc": "^3.1.0",
     "hdkey": "^0.8.0",
     "safe-buffer": "^5.1.1",
     "secp256k1": "^3.5.0",
@@ -31,7 +31,12 @@
     "test": "npm run lint && npm run build && mocha",
     "test:local": "NODE_ENV=development && cd docker && ./up.sh && cd .. && npm run lint && npm run build && mocha",
     "coverage": "nyc --reporter=html --reporter=text mocha",
-    "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cobowallet/eos-wallet.git"
   },
   "files": [
     "dist"

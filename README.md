@@ -39,6 +39,17 @@ You will create a EOS HDNode instance and use the methods of the instance:
 }
 ```
 
+### Usage
+```
+yarn add @cobo/eos
+```
+```
+import eos from '@cobo/eos';
+
+const wallet = eos.fromMasterSeed('...');
+const address = wallet.getAddress();
+```
+
 ### Examples
 
 See `test/test.js`

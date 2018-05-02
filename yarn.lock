@@ -837,27 +837,13 @@ encoding@^0.1.11:
   dependencies:
     iconv-lite "~0.4.13"
 
-eosjs-api@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/eosjs-api/-/eosjs-api-4.0.3.tgz#3a7693bf95a2cc343e19cc7adbc0c98e4eb2b74f"
+eosjs-api@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/eosjs-api/-/eosjs-api-5.0.0.tgz#7e4389c748420a88f3fff902c404cce03ae476b1"
   dependencies:
     camel-case "^3.0.0"
-    eosjs-json "^4.0.1"
     is-browser "^2.0.1"
     isomorphic-fetch "^2.2.1"
-
-eosjs-ecc@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/eosjs-ecc/-/eosjs-ecc-2.0.1.tgz#b651efae2bfe5860cb08e362c5bb45de4f2e2eda"
-  dependencies:
-    bigi "^1.4.2"
-    browserify-aes "^1.0.6"
-    bs58 "^4.0.1"
-    bytebuffer "^5.0.1"
-    create-hash "^1.1.3"
-    create-hmac "^1.1.6"
-    ecurve "^1.0.5"
-    randombytes "^2.0.5"
 
 eosjs-ecc@^3.0.2:
   version "3.0.2"
@@ -872,20 +858,28 @@ eosjs-ecc@^3.0.2:
     ecurve "^1.0.5"
     randombytes "^2.0.5"
 
-eosjs-json@^4.0.1, eosjs-json@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/eosjs-json/-/eosjs-json-4.0.2.tgz#ab454fc3f9245af579e4a4949a0b52fa237a6eba"
+eosjs-ecc@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eosjs-ecc/-/eosjs-ecc-3.1.0.tgz#3d6b9008d622ebf5a0866b69aafca926b0f4f761"
+  dependencies:
+    bigi "^1.4.2"
+    browserify-aes "^1.0.6"
+    bs58 "^4.0.1"
+    bytebuffer "^5.0.1"
+    create-hash "^1.1.3"
+    create-hmac "^1.1.6"
+    ecurve "^1.0.5"
+    randombytes "^2.0.5"
 
-eosjs@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/eosjs/-/eosjs-8.0.1.tgz#4df55cdd6abc9ffbb58d1b8d5978107f047f1b02"
+eosjs@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/eosjs/-/eosjs-9.0.1.tgz#295c267461aea8c862fe8f63e33fb7e6e2ab3f7d"
   dependencies:
     babel-polyfill "^6.26.0"
     binaryen "^37.0.0"
     create-hash "^1.1.3"
-    eosjs-api "^4.0.3"
+    eosjs-api "^5.0.0"
     eosjs-ecc "^3.0.2"
-    eosjs-json "^4.0.2"
     fcbuffer "^2.1.5"
 
 error-ex@^1.2.0, error-ex@^1.3.1:
