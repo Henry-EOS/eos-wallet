@@ -3,8 +3,20 @@
 ![travis](https://travis-ci.org/cobowallet/eos-wallet.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/cobowallet/eos-wallet/badge.svg?branch=master)](https://coveralls.io/github/cobowallet/eos-wallet?branch=master)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM Package](https://img.shields.io/npm/v/@cobo/eos.svg?style=flat-square)](https://www.npmjs.com/package/@cobo/eos)
 
 > JavaScript HDWallet for EOS blockchain, something like `ethereumjs-wallet`.
+
+### Usage
+```
+yarn add @cobo/eos
+```
+```
+import eos from '@cobo/eos';
+
+const wallet = eos.fromMasterSeed('...');
+const address = wallet.getAddress();
+```
 
 ### EOS HDNode
 
@@ -37,17 +49,6 @@ You will create a EOS HDNode instance and use the methods of the instance:
   refBlockPrefix: 452435776, // get from eos.getBlock(last_irrvertable_block)
   expiration: 60 // default is 60s
 }
-```
-
-### Usage
-```
-yarn add @cobo/eos
-```
-```
-import eos from '@cobo/eos';
-
-const wallet = eos.fromMasterSeed('...');
-const address = wallet.getAddress();
 ```
 
 ### Examples
