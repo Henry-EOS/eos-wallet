@@ -85,19 +85,23 @@ class HDNode {
       region: 0,
       ref_block_num: refBlockNum,
       ref_block_prefix: refBlockPrefix,
-      max_net_usage_words: 0,
-      max_kcpu_usage: 0,
+      net_usage_words: 0,
+      max_cpu_usage_ms: 0,
       delay_sec: 0,
       context_free_actions: []
     }
     const privateKey = this.getPrivateKey()
-    return eos.Localnet({
+    return eos({
       keyProvider: privateKey,
-      httpEndpoint: 'https://doesnotexist.example.org',
       transactionHeaders: (expireInSeconds, callback) => callback(null, headers),
       broadcast: false,
       sign: true
     })
+  }
+
+  getOnlineInstance () {
+    const privateKey = this.getPrivateKey()
+    return eos({ keyProvider: privateKey, broadcast: false, sign: true })
   }
 
   async generateTransaction ({ from, to, amount, memo, refBlockNum, refBlockPrefix, expiration, symbol }) {
@@ -109,13 +113,26 @@ class HDNode {
 
   async registerAccount ({ accountName, refBlockNum, refBlockPrefix, expiration, creator = 'eosio' }) {
     const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
-    const res = await eosjsInstance.newaccount({
-      creator,
-      name: accountName,
-      owner: this.getAddress(),
-      active: this.getAddress(),
-      recovery: creator
-    })
+    const res = await eosjsInstance.transaction(tr => {
+      tr.newaccount({
+        creator: 'eosio',
+        name: accountName,
+        owner: this.getAddress(),
+        active: this.getAddress()
+      })
+      tr.buyrambytes({
+        payer: 'eosio',
+        receiver: accountName,
+        bytes: 8192
+      })
+      tr.delegatebw({
+        from: 'eosio',
+        receiver: accountName,
+        stake_net_quantity: '1.0000 SYS',
+        stake_cpu_quantity: '1.0000 SYS',
+        transfer: 0
+      })
+    }, { broadcast: false })
     return res
   }
 }

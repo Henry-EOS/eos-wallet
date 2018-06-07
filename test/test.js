@@ -49,6 +49,15 @@ describe('EOS HDNode', function () {
     assert.equal(node.getPublicExtendedKey(), 'xpub661MyMwAqRbcEbMQxKcSkJWLhMEGYArY7xa8Qo3hUjRQGUoNXM9PPf1YgT9CCwi8MNvRLW91thbtChgu6eP5qcUeg3x2QLQGfFfC5LqM5dt')
   })
 
+  it('Test EOS tx', async () => {
+    const node = HDNode.fromPrivateKey('5JEz3RE92t35seYNWzrBhXvE22LkFCSJPWqi1icoxoXH9ZPqMVj')
+    assert.equal(node.getAddress(), 'EOS8Q6s4WGcswUdot8UntNA2G4PVnUha5MyE1CDwZSX76FWc1xQEs')
+
+    const instance = await node.getOnlineInstance()
+    const tx = await instance.transfer('inita', 'initb', '1 SYS', '', { broadcast: false })
+    return tx
+  })
+
   it('Can generate and sign transaction', async () => {
     const node = HDNode.fromMasterSeed(seed)
     const trx = await node.generateTransaction({
@@ -76,39 +85,38 @@ describe('EOS HDNode', function () {
 
   it('Can create account use a pubkey', async () => {
     const node = HDNode.fromPrivateKey('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
-    const isLocal = process.env.NODE_ENV === 'development'
-    const provider = EOS.Localnet({ httpEndpoint: isLocal ? 'http://127.0.0.1:8888' : 'http://45.32.43.84:8888' })
+    const provider = EOS({ httpEndpoint: 'http://127.0.0.1:8888' })
     const latestBlock = await provider.getInfo({})
     const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
     const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
 
-    const randomName = () => 'a' +
-      String(Math.round(Math.random() * 1000000000)).replace(/[0,6-9]/g, '')
+    // const randomName = () => 'a' +
+    //   String(Math.round(Math.random() * 1000000000)).replace(/[0,6-9]/g, '')
     const { transaction } = await node.registerAccount({
       refBlockNum,
       refBlockPrefix: blockInfo.ref_block_prefix,
-      accountName: randomName()
+      accountName: 'liukai'
     })
     const res = await provider.pushTransaction(transaction)
-    assert.equal(res.processed.status, 'executed')
+    console.log(JSON.stringify(res, null, 2))
+    return res
   })
 
-  it('Can import from private key and transfer', async () => {
-    const node = HDNode.fromPrivateKey('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
-    const isLocal = process.env.NODE_ENV === 'development'
-    const provider = EOS.Localnet({ httpEndpoint: isLocal ? 'http://127.0.0.1:8888' : 'http://45.32.43.84:8888' })
-    const latestBlock = await provider.getInfo({})
-    const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
-    const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
-    const { transaction } = await node.generateTransaction({
-      from: 'eosio',
-      to: 'inita',
-      amount: 100000,
-      memo: 'cobo wallet is awesome',
-      refBlockNum,
-      refBlockPrefix: blockInfo.ref_block_prefix
-    })
-    const res = await provider.pushTransaction(transaction)
-    assert.equal(res.processed.status, 'executed')
-  })
+  // it('Can import from private key and transfer', async () => {
+  //   const node = HDNode.fromPrivateKey('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
+  //   const provider = EOS({ httpEndpoint: 'http://127.0.0.1:8888' })
+  //   const latestBlock = await provider.getInfo({})
+  //   const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
+  //   const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
+  //   const { transaction } = await node.generateTransaction({
+  //     from: 'eosio',
+  //     to: 'inita',
+  //     amount: 100000,
+  //     memo: 'cobo wallet is awesome',
+  //     refBlockNum,
+  //     refBlockPrefix: blockInfo.ref_block_prefix
+  //   })
+  //   const res = await provider.pushTransaction(transaction)
+  //   assert.equal(res.processed.status, 'executed')
+  // })
 })
