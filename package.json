@@ -1,6 +1,6 @@
 {
   "name": "@cobo/eos",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
@@ -29,7 +29,7 @@
     "lint": "standard",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "npm run lint && npm run build && mocha",
+    "test": "npm run lint && npm run build && mocha --timeout 5000",
     "test:local": "cd docker && ./up.sh && cd .. && npm run lint && npm run build && mocha",
     "coverage": "nyc --reporter=html --reporter=text mocha",
     "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls",

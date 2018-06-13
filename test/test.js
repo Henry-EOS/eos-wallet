@@ -49,15 +49,6 @@ describe('EOS HDNode', function () {
     assert.equal(node.getPublicExtendedKey(), 'xpub661MyMwAqRbcEbMQxKcSkJWLhMEGYArY7xa8Qo3hUjRQGUoNXM9PPf1YgT9CCwi8MNvRLW91thbtChgu6eP5qcUeg3x2QLQGfFfC5LqM5dt')
   })
 
-  it('Test EOS tx', async () => {
-    const node = HDNode.fromPrivateKey('5JEz3RE92t35seYNWzrBhXvE22LkFCSJPWqi1icoxoXH9ZPqMVj')
-    assert.equal(node.getAddress(), 'EOS8Q6s4WGcswUdot8UntNA2G4PVnUha5MyE1CDwZSX76FWc1xQEs')
-
-    const instance = await node.getOnlineInstance()
-    const tx = await instance.transfer('inita', 'initb', '1 SYS', '', { broadcast: false })
-    return tx
-  })
-
   it('Can generate and sign transaction', async () => {
     const node = HDNode.fromMasterSeed(seed)
     const trx = await node.generateTransaction({
@@ -84,39 +75,57 @@ describe('EOS HDNode', function () {
   })
 
   it('Can create account use a pubkey', async () => {
-    const node = HDNode.fromPrivateKey('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
-    const provider = EOS({ httpEndpoint: 'http://127.0.0.1:8888' })
+    // http://jungle.cryptolions.io/#home
+    // jungle testnet
+    // Pub EOS6VqCksTcXbYN9TQUBUewZv144PsJWmHsvWLvNLhiKEFDxXJj3g
+    // Pri 5J7k1w53wGeyaduCdULjkng1JeMnNhqsfvUeGSHaWhw5z2joUQK
+    const node = HDNode.fromPrivateKey(
+      '5J7k1w53wGeyaduCdULjkng1JeMnNhqsfvUeGSHaWhw5z2joUQK',
+      '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+    )
+    const provider = EOS({
+      httpEndpoint: 'http://bp4-d3.eos42.io:8888',
+      chainId: '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+    })
     const latestBlock = await provider.getInfo({})
     const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
     const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
 
-    // const randomName = () => 'a' +
-    //   String(Math.round(Math.random() * 1000000000)).replace(/[0,6-9]/g, '')
+    const randomName = () => {
+      const name = String(Math.round(Math.random() * 1000000000)).replace(/[0,6-9]/g, '')
+      return 'a' + name + '111222333444'.substring(0, 11 - name.length) // always 12 in length
+    }
     const { transaction } = await node.registerAccount({
       refBlockNum,
       refBlockPrefix: blockInfo.ref_block_prefix,
-      accountName: 'liukai'
+      accountName: randomName(),
+      creator: 'cobowalletaa'
     })
     const res = await provider.pushTransaction(transaction)
-    console.log(JSON.stringify(res, null, 2))
     return res
   })
 
-  // it('Can import from private key and transfer', async () => {
-  //   const node = HDNode.fromPrivateKey('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
-  //   const provider = EOS({ httpEndpoint: 'http://127.0.0.1:8888' })
-  //   const latestBlock = await provider.getInfo({})
-  //   const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
-  //   const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
-  //   const { transaction } = await node.generateTransaction({
-  //     from: 'eosio',
-  //     to: 'inita',
-  //     amount: 100000,
-  //     memo: 'cobo wallet is awesome',
-  //     refBlockNum,
-  //     refBlockPrefix: blockInfo.ref_block_prefix
-  //   })
-  //   const res = await provider.pushTransaction(transaction)
-  //   assert.equal(res.processed.status, 'executed')
-  // })
+  it('Can import from private key and transfer', async () => {
+    const node = HDNode.fromPrivateKey(
+      '5J7k1w53wGeyaduCdULjkng1JeMnNhqsfvUeGSHaWhw5z2joUQK',
+      '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+    )
+    const provider = EOS({
+      httpEndpoint: 'http://bp4-d3.eos42.io:8888',
+      chainId: '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+    })
+    const latestBlock = await provider.getInfo({})
+    const refBlockNum = (latestBlock.head_block_num - 3) & 0xFFFF
+    const blockInfo = await provider.getBlock(latestBlock.head_block_num - 3)
+    const { transaction } = await node.generateTransaction({
+      from: 'cobowalletaa',
+      to: 'liukailiukai',
+      amount: 10000,
+      memo: 'cobo wallet is awesome',
+      refBlockNum,
+      refBlockPrefix: blockInfo.ref_block_prefix
+    })
+    const res = await provider.pushTransaction(transaction)
+    return res
+  })
 })

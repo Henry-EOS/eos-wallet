@@ -9,7 +9,7 @@ import secp256k1 from 'secp256k1'
 import { toEOSAmount, getExpiration } from './util'
 
 class HDNode {
-  constructor ({ seed, extendedKey, privateKey }) {
+  constructor ({ seed, extendedKey, privateKey, chainId }) {
     if (seed) {
       this._seed = seed
       this._node = hdkey.fromMasterSeed(Buffer(seed, 'hex'))
@@ -25,28 +25,29 @@ class HDNode {
         _privateKey: privateKey
       }
     }
+    this._chainId = chainId || 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f'
   }
 
   static generateMnemonic () {
     return bip39.generateMnemonic()
   }
 
-  static fromMnemonic (mnemonic) {
+  static fromMnemonic (mnemonic, chainId) {
     const seed = bip39.mnemonicToSeedHex(mnemonic)
-    return new this({ seed })
+    return new this({ seed, chainId })
   }
 
-  static fromMasterSeed (seed) {
-    return new this({ seed })
+  static fromMasterSeed (seed, chainId) {
+    return new this({ seed, chainId })
   }
 
-  static fromExtendedKey (extendedKey) {
-    return new this({ extendedKey })
+  static fromExtendedKey (extendedKey, chainId) {
+    return new this({ extendedKey, chainId })
   }
 
-  static fromPrivateKey (key) {
+  static fromPrivateKey (key, chainId) {
     const privateKey = wif.decode(key).privateKey
-    return new this({ privateKey })
+    return new this({ privateKey, chainId })
   }
 
   derivePath (path) {
@@ -95,13 +96,9 @@ class HDNode {
       keyProvider: privateKey,
       transactionHeaders: (expireInSeconds, callback) => callback(null, headers),
       broadcast: false,
-      sign: true
+      sign: true,
+      chainId: this._chainId
     })
-  }
-
-  getOnlineInstance () {
-    const privateKey = this.getPrivateKey()
-    return eos({ keyProvider: privateKey, broadcast: false, sign: true })
   }
 
   async generateTransaction ({ from, to, amount, memo, refBlockNum, refBlockPrefix, expiration, symbol }) {
@@ -111,28 +108,28 @@ class HDNode {
     return trx
   }
 
-  async registerAccount ({ accountName, refBlockNum, refBlockPrefix, expiration, creator = 'eosio' }) {
+  async registerAccount ({ accountName, refBlockNum, refBlockPrefix, expiration, creator, stakeAmount = 1000 }) {
     const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
     const res = await eosjsInstance.transaction(tr => {
       tr.newaccount({
-        creator: 'eosio',
+        creator,
         name: accountName,
         owner: this.getAddress(),
         active: this.getAddress()
       })
       tr.buyrambytes({
-        payer: 'eosio',
+        payer: creator,
         receiver: accountName,
         bytes: 8192
       })
       tr.delegatebw({
-        from: 'eosio',
+        from: creator,
         receiver: accountName,
-        stake_net_quantity: '1.0000 SYS',
-        stake_cpu_quantity: '1.0000 SYS',
+        stake_net_quantity: toEOSAmount(stakeAmount),
+        stake_cpu_quantity: toEOSAmount(stakeAmount),
         transfer: 0
       })
-    }, { broadcast: false })
+    }, { broadcast: false, sign: true })
     return res
   }
 }
