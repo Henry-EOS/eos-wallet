@@ -15,7 +15,7 @@ yarn add @cobo/eos
 import eos from '@cobo/eos';
 
 const wallet = eos.fromMasterSeed('...');
-const address = wallet.getAddress();
+const pubkey = wallet.getPublicKey(); // EOS4w7FYzzeYJ7oz6XD5exo9ARpQdGoBZhPPjv5ywyrF5PioHtthX
 ```
 
 ### EOS HDNode
@@ -36,21 +36,47 @@ You will create a EOS HDNode instance and use the methods of the instance:
 * `deriveChild` - Return a derived HD node instance
 * `getPrivateExtendedKey` - Return the private extend key (base58)
 * `getPublicExtendedKey` - Return the public extend key (base58)
-* `getAddress` - Return the EOS address (sometimes called pubkey in eosjs)
-* `getPrivateKey` - Return the private key of the current node / address (sometimes called wif in eosjs)
-* `generateTransaction` - `return Promise` - Generate a EOS raw transaction, param example:
+* `getPublicKey` - Return the EOS public key
+* `getPrivateKey` - Return the private key of the current node / address (or WIF)
+* `(async) generateTransaction` - Generate a EOS raw transaction, param example:
+```JavaScript
+const wallet = eos.fromMasterSeed('...');
+const rawTx = await wallet.generateTransaction({
+    from: 'from',
+    to: 'to',
+    amount: 100000, // will convert to '10.0000 EOS'
+    memo: 'hello world',
+    refBlockNum: 1, // get from eos.getInfo()
+    refBlockPrefix: 452435776, // get from eos.getBlock(last_irrvertable_block)
+    expiration: 60, // default is 60s
+    symbol: 'EOS' // default is EOS
+})
 ```
-{
-  from: 'eosio',
-  to: 'inita',
-  amount: 100000, // will convert to '10.0000 EOS'
-  memo: 'hello world',
-  refBlockNum: 1, // get from eos.getInfo()
-  refBlockPrefix: 452435776, // get from eos.getBlock(last_irrvertable_block)
-  expiration: 60 // default is 60s
-}
+* `(async) delegate` - Generate a EOS raw tx for delegate bandwitdth
+```JavaScript
+const wallet = eos.fromMasterSeed('...');
+const rawTx = await wallet.delegate({
+    from: 'from',
+    to: 'to',
+    cpuAmount: 100000, // will convert to '10.0000 EOS'
+    netAmount: 100000,
+    symbol: 'EOS', // default is EOS
+    refBlockNum: 1,
+    refBlockPrefix: 452435776
+})
+```
+* `(async) undelegate` - Same as delegate
+* `(async) vote` - Generate a EOS raw tx for vote producers
+```JavaScript
+const wallet = eos.fromMasterSeed('...');
+const rawTx = await wallet.vote({
+    from: 'from',
+    producers: ['lioninjungle'],
+    refBlockNum: 1,
+    refBlockPrefix: 452435776
+})
 ```
 
-### Examples
+### More Examples
 
 See `test/test.js`

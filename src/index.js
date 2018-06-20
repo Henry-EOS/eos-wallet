@@ -72,7 +72,7 @@ class HDNode {
     return this._node.publicExtendedKey
   }
 
-  getAddress () {
+  getPublicKey () {
     return ecc.PublicKey(this._node._publicKey).toString()
   }
 
@@ -97,7 +97,8 @@ class HDNode {
       transactionHeaders: (expireInSeconds, callback) => callback(null, headers),
       broadcast: false,
       sign: true,
-      chainId: this._chainId
+      chainId: this._chainId,
+      httpEndpoint: null
     })
   }
 
@@ -108,14 +109,14 @@ class HDNode {
     return trx
   }
 
-  async registerAccount ({ accountName, refBlockNum, refBlockPrefix, expiration, creator, stakeAmount = 1000 }) {
+  async registerAccount ({ accountName, refBlockNum, refBlockPrefix, expiration, creator, stakeAmount = 10000, symbol }) {
     const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
     const res = await eosjsInstance.transaction(tr => {
       tr.newaccount({
         creator,
         name: accountName,
-        owner: this.getAddress(),
-        active: this.getAddress()
+        owner: this.getPublicKey(),
+        active: this.getPublicKey()
       })
       tr.buyrambytes({
         payer: creator,
@@ -125,11 +126,45 @@ class HDNode {
       tr.delegatebw({
         from: creator,
         receiver: accountName,
-        stake_net_quantity: toEOSAmount(stakeAmount),
-        stake_cpu_quantity: toEOSAmount(stakeAmount),
+        stake_net_quantity: toEOSAmount(stakeAmount, symbol),
+        stake_cpu_quantity: toEOSAmount(stakeAmount, symbol),
         transfer: 0
       })
     }, { broadcast: false, sign: true })
+    return res
+  }
+
+  async delegate ({ from, to, cpuAmount, netAmount, refBlockNum, refBlockPrefix, expiration, symbol }) {
+    const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
+    const res = await eosjsInstance.transaction(tr => {
+      tr.delegatebw({
+        from,
+        receiver: to,
+        stake_net_quantity: toEOSAmount(netAmount, symbol),
+        stake_cpu_quantity: toEOSAmount(cpuAmount, symbol),
+        transfer: 0
+      })
+    }, { broadcast: false, sign: true })
+    return res
+  }
+
+  async undelegate ({ from, to, cpuAmount, netAmount, refBlockNum, refBlockPrefix, expiration, symbol }) {
+    const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
+    const res = await eosjsInstance.transaction(tr => {
+      tr.undelegatebw({
+        from,
+        receiver: to,
+        unstake_net_quantity: toEOSAmount(netAmount, symbol),
+        unstake_cpu_quantity: toEOSAmount(cpuAmount, symbol),
+        transfer: 0
+      })
+    }, { broadcast: false, sign: true })
+    return res
+  }
+
+  async vote ({ from, producers, refBlockNum, refBlockPrefix, expiration }) {
+    const eosjsInstance = this.getInstance(expiration, refBlockNum, refBlockPrefix)
+    const res = await eosjsInstance.voteproducer(from, '', producers)
     return res
   }
 }
