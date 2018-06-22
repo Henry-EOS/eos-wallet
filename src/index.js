@@ -53,13 +53,13 @@ class HDNode {
   derivePath (path) {
     assert(this._node.derive, 'can not derive when generate from private / public key')
     this._node = this._node.derive(path)
-    return new HDNode({ extendedKey: this._node.privateExtendedKey })
+    return new HDNode({ extendedKey: this._node.privateExtendedKey, chainId: this._chainId })
   }
 
   deriveChild (index) {
     assert(this._node.deriveChild, 'can not derive when generate from private / public key')
     this._node = this._node.deriveChild(index)
-    return new HDNode({ extendedKey: this._node.privateExtendedKey })
+    return new HDNode({ extendedKey: this._node.privateExtendedKey, chainId: this._chainId })
   }
 
   getPrivateExtendedKey () {
